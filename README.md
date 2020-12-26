@@ -1,4 +1,4 @@
-# firstapp
+# E-commerce Mobile App with Flutter
 
 A new Flutter project.
 
