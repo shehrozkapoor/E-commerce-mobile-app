@@ -58,7 +58,7 @@ class _BottomTabsState extends State<BottomTabs> {
               buttonName: "logout",
               selected: _selectedTab == 3 ? true : false,
               onPressed: () {
-                widget.pressTabPage(3);
+                FirebaseAuth.instance.signOut();
               },
             ),
           ],
