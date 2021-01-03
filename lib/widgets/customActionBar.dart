@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstapp/constant.dart';
+import 'package:firstapp/services/firebase_services.dart';
 import 'package:flutter/material.dart';
 
 class CustomActionBar extends StatelessWidget {
@@ -10,15 +11,13 @@ class CustomActionBar extends StatelessWidget {
   final bool hasBackground;
   CustomActionBar(
       {this.hasBackArrow, this.hasTitle, this.title, this.hasBackground});
+  FirebaseServices _firebaseServices = FirebaseServices();
   @override
   Widget build(BuildContext context) {
     bool _hasBackArrow = hasBackArrow ?? false;
     bool _hasTitle = hasTitle ?? false;
     bool _hasBackground = hasBackground ?? true;
     int _totalItem = 0;
-    final CollectionReference _userRef =
-        FirebaseFirestore.instance.collection('Users');
-    User _user = FirebaseAuth.instance.currentUser;
     return Container(
       decoration: BoxDecoration(
           gradient: _hasBackground
@@ -71,7 +70,11 @@ class CustomActionBar extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: StreamBuilder(
-              stream: _userRef.doc(_user.uid).collection('Cart').snapshots(),
+              stream: _firebaseServices
+                  .getUserRef()
+                  .doc(_firebaseServices.getUserId())
+                  .collection('Cart')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   List _documents = snapshot.data.docs;

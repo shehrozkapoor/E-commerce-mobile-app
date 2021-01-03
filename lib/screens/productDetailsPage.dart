@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstapp/constant.dart';
+import 'package:firstapp/services/firebase_services.dart';
 import 'package:firstapp/widgets/customActionBar.dart';
 import 'package:firstapp/widgets/imageSwipe.dart';
 import 'package:firstapp/widgets/productSizes.dart';
@@ -14,11 +15,8 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  final CollectionReference _productsRef =
-      FirebaseFirestore.instance.collection('Products');
-  final CollectionReference _userRef =
-      FirebaseFirestore.instance.collection('Users');
-  User _user = FirebaseAuth.instance.currentUser;
+  FirebaseServices _firebaseServices = FirebaseServices();
+
   final SnackBar _snackBar = SnackBar(
     content: Text('Added to Cart'),
   );
@@ -26,8 +24,9 @@ class _ProductDetailState extends State<ProductDetail> {
   String _name = "";
   String _price = "";
   Future _addToCart() {
-    return _userRef
-        .doc(_user.uid)
+    return _firebaseServices
+        .getUserRef()
+        .doc(_firebaseServices.getUserId())
         .collection('Cart')
         .doc(widget.productId)
         .set({
@@ -44,7 +43,8 @@ class _ProductDetailState extends State<ProductDetail> {
           child: Stack(
         children: [
           FutureBuilder(
-            future: _productsRef.doc(widget.productId).get(),
+            future:
+                _firebaseServices.getProductRef().doc(widget.productId).get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
